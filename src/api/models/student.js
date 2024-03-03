@@ -8,25 +8,7 @@ const studentSchema = new mongoose.Schema(
     gender: { type: String, required: true },
     age: { type: Number, required: true },
     grade: { type: Number, required: true },
-    subjects: [
-      {
-        type: String,
-        required: true,
-        enum: [
-          "Math",
-          "Physics",
-          "Biology",
-          "Chemistry",
-          "History",
-          "English",
-          "Spanish",
-          "German",
-          "Sports",
-          "Music",
-          "IT",
-        ],
-      },
-    ],
+    subjects: [{ type: mongoose.Types.ObjectId, ref: "subjects" }],
   },
   {
     timestamps: true,

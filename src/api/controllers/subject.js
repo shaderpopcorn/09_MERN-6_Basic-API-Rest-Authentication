@@ -4,7 +4,7 @@ const { Subject } = require("../models/subject");
 // GET
 const getAllSubjects = async (req, res, next) => {
   try {
-    const allSubjects = await Subject.find();
+    const allSubjects = await Subject.find().populate("students", "name");
     return res.status(200).json(allSubjects);
   } catch (err) {
     return next(setError(400, err));
@@ -42,24 +42,19 @@ const newSubject = async (req, res, next) => {
 const updateSubject = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const oldSubject = await Subject.findById(id);
-    const updatedSubject = new Subject(req.body);
-    updatedSubject._id = id;
-
-    if (updatedSubject.students) {
-      const uniqueSet = new Set([
-        ...oldSubject.students,
-        ...updatedSubject.students,
-      ]);
-
-      updatedSubject.students = Array.from(uniqueSet);
-    }
-
-    const newSubjectInfo = await Subject.findByIdAndUpdate(id, updatedSubject, {
-      new: true,
-    });
-
-    return res.status(200).json(newSubjectInfo);
+    const { name, image, teacher, grade, languages } = req.body;
+    const updatedSubject = await Subject.findByIdAndUpdate(
+      id,
+      {
+        name: name,
+        image: image,
+        teacher: teacher,
+        grade: grade,
+        languages: languages,
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedSubject);
   } catch (err) {
     return next(setError(400, err));
   }

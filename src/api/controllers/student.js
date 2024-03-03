@@ -42,23 +42,19 @@ const newStudent = async (req, res, next) => {
 const updateStudent = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const oldStudent = await Student.findById(id);
-    const updatedStudent = new Student(req.body);
-    updatedStudent._id = id;
-
-    if (updatedStudent.subjects) {
-      const uniqueSet = new Set([
-        ...oldStudent.subjects,
-        ...updatedStudent.subjects,
-      ]);
-      updatedStudent.subjects = Array.from(uniqueSet);
-    }
-
-    const newStudentInfo = await Student.findByIdAndUpdate(id, updatedStudent, {
-      new: true,
-    });
-
-    return res.status(200).json(newStudentInfo);
+    const { name, image, gender, age, grade } = req.body;
+    const updatedStudent = await Student.findByIdAndUpdate(
+      id,
+      {
+        name: name,
+        image: image,
+        gender: gender,
+        age: age,
+        grade: grade,
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedStudent);
   } catch (err) {
     return next(setError(400, err));
   }

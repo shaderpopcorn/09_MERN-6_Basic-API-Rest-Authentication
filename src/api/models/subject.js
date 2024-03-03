@@ -6,6 +6,7 @@ const subjectSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     image: { type: String, required: true, trim: true },
     teacher: { type: String, required: true, trim: true },
+    grade: { type: Number, required: true, trim: true },
     languages: [
       {
         type: String,
