@@ -29,13 +29,26 @@ const updateStudentsOfSubjectByID = async (req, res, next) => {
     const updatedSubject = new Subject(req.body);
     updatedSubject._id = id;
 
-    if (updatedSubject.students) {
-      const uniqueSet = new Set([
-        ...oldSubject.students,
-        ...updatedSubject.students,
-      ]);
-      updatedSubject.students = Array.from(uniqueSet);
+    const students = [...oldSubject.students, ...updatedSubject.students];
+    const temp = {};
+    for (const student of students) {
+      temp[student] = true;
     }
+
+    const uniqueStudents = [];
+    for (const student in temp) {
+      uniqueStudents.push(student);
+    }
+
+    console.log(students);
+
+    // if (updatedSubject.students) {
+    //   const uniqueSet = new Set([
+    //     ...oldSubject.students,
+    //     ...updatedSubject.students,
+    //   ]);
+    //   updatedSubject.students = Array.from(uniqueSet);
+    // }
 
     const newSubjectInfo = await Subject.findByIdAndUpdate(id, updatedSubject, {
       new: true,
