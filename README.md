@@ -3,9 +3,13 @@
 ENDPOINTS FOR GENERAL SUBJECT CRUD REQUESTS:
 
 Get All Subjects -> http://localhost:4001/api/subjects/
+
 Get Subject By Id -> http://localhost:4001/api/subjects/<id_of_subject>
+
 New Subject -> http://localhost:4001/api/subjects/
+
 Update Subject By Id -> http://localhost:4001/api/subjects/<id_of_subject>
+
 Delete Subject By Id -> http://localhost:4001/api/subjects/<id_of_subject>
 
 subject schema to use for JSON object at 'New Subject' and 'Update Subject By Id':
