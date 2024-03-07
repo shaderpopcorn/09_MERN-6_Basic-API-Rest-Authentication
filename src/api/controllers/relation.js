@@ -1,6 +1,7 @@
 const { setError } = require("../../config/error");
 const { Student } = require("../models/student");
 const { Subject } = require("../models/subject");
+const mongoose = require("mongoose");
 
 const getStudentsOfSubjectByID = async (req, res, next) => {
   try {
@@ -29,19 +30,16 @@ const updateStudentsOfSubjectByID = async (req, res, next) => {
     const updatedSubject = new Subject(req.body);
     updatedSubject._id = id;
 
-    const students = [...oldSubject.students, ...updatedSubject.students];
-    const temp = {};
-    for (const student of students) {
-      temp[student] = true;
-    }
+    //converting to strings so that 'new Set' can make a unique Array from it
+    const old = oldSubject.students.toString().split(",");
+    const updated = updatedSubject.students.toString().split(",");
+    const allStudents = [...old, ...updated];
+    const uniqueSet = [...new Set(allStudents)];
 
-    const uniqueStudents = [];
-    for (const student in temp) {
-      uniqueStudents.push(student);
-    }
+    // converting back to Array of Object-IDs
+    // TODO
 
-    console.log(students);
-
+    // old approach with trying to get a unique array of Object-IDs
     // if (updatedSubject.students) {
     //   const uniqueSet = new Set([
     //     ...oldSubject.students,
@@ -50,11 +48,10 @@ const updateStudentsOfSubjectByID = async (req, res, next) => {
     //   updatedSubject.students = Array.from(uniqueSet);
     // }
 
-    const newSubjectInfo = await Subject.findByIdAndUpdate(id, updatedSubject, {
-      new: true,
-    });
-
-    return res.status(200).json(newSubjectInfo);
+    // const newSubjectInfo = await Subject.findByIdAndUpdate(id, updatedSubject, {
+    //   new: true,
+    // });
+    // return res.status(200).json(newSubjectInfo);
   } catch (err) {
     return next(setError(400, err));
   }
