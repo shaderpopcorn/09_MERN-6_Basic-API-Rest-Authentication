@@ -15,7 +15,6 @@ const getStudentsOfSubjectByID = async (req, res, next) => {
 const getSubjectsOfStudentByID = async (req, res, next) => {
   try {
     const student = await Student.findById(req.params.id).populate("subjects");
-    console.log(student);
     res.status(200).json(student.subjects);
   } catch (err) {
     return next(setError(400, err));
@@ -74,13 +73,32 @@ const updateSubjectsOfStudentByID = async (req, res, next) => {
     const updatedStudent = new Student(req.body);
     updatedStudent._id = id;
 
-    if (updatedStudent.subjects) {
-      const uniqueSet = new Set([
-        ...oldStudent.subjects,
-        ...updatedStudent.subjects,
-      ]);
-      updatedStudent.subjects = Array.from(uniqueSet);
-    }
+    //converting to strings so that 'new Set' can make a unique Array from it
+    const old = oldStudent.subjects.toString().split(",");
+    const updated = updatedStudent.subjects.toString().split(",");
+    const allSubjects = [...old, ...updated];
+
+    // filter students for empty strings (this is the case when old or updated are empty)
+    const filtered = allSubjects.filter((el) => {
+      return el != "";
+    });
+
+    // make unique set from students
+    const uniqueSet = [...new Set(filtered)];
+
+    // converting strings back to Array of Object-IDs
+    updatedStudent.subjects = uniqueSet.map(
+      (idString) => new mongoose.Types.ObjectId(idString)
+    );
+
+    // old approach with trying to get a unique array of Object-IDs
+    // if (updatedStudent.subjects) {
+    //   const uniqueSet = new Set([
+    //     ...oldStudent.subjects,
+    //     ...updatedStudent.subjects,
+    //   ]);
+    //   updatedStudent.subjects = Array.from(uniqueSet);
+    // }
 
     const newStudentInfo = await Student.findByIdAndUpdate(id, updatedStudent, {
       new: true,
