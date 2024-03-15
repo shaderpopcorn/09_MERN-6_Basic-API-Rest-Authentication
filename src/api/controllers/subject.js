@@ -42,18 +42,10 @@ const newSubject = async (req, res, next) => {
 const updateSubject = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { name, image, teacher, grade, languages } = req.body;
-    const updatedSubject = await Subject.findByIdAndUpdate(
-      id,
-      {
-        name: name,
-        image: image,
-        teacher: teacher,
-        grade: grade,
-        languages: languages,
-      },
-      { new: true }
-    );
+    const payload = req.body;
+    const updatedSubject = await Subject.findByIdAndUpdate(id, payload, {
+      new: true,
+    });
     res.status(200).json(updatedSubject);
   } catch (err) {
     return next(setError(400, err));

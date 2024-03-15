@@ -10,7 +10,7 @@ app.use(express.json());
 app.use("/api", indexRouter);
 
 app.use("*", (req, res, next) => {
-  return res.next(setError(404, "Not found!"));
+  return next(setError(404, "Not found!"));
 });
 
 app.use((error, req, res, next) => {
